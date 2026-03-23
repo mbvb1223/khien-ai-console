@@ -83,7 +83,7 @@ async function startInteractiveChat(serverUrl: string, initialFiles: string[]) {
     if (isHealthy) {
       healthSpinner.succeed('Connected to MCP server');
     } else {
-      healthSpinner.fail('MCP server is not responding');
+      healthSpinner.fail('MCP server is not responding!');
       return;
     }
   } catch (error) {

@@ -25,7 +25,7 @@ export class MCPTransport {
   async sendRequest(request: MCPRequest): Promise<MCPResponse> {
     try {
       const response: AxiosResponse<MCPResponse> = await this.client.post(
-        '/mcp/process',
+        '/_mcp',
         request
       );
       return response.data;
@@ -44,7 +44,7 @@ export class MCPTransport {
    */
   async healthCheck(): Promise<boolean> {
     try {
-      await this.client.get('/');
+      await this.client.get('/health');
       return true;
     } catch {
       return false;

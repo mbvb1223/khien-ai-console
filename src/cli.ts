@@ -5,6 +5,7 @@ import inquirer from 'inquirer';
 import chalk from 'chalk';
 import ora from 'ora';
 import { MCPClient } from './mcp/client';
+import { MCPResource } from './mcp/types';
 import { SessionManager } from './session/manager';
 import { createFileResources } from './utils/files';
 import { getDefaultServerUrl, getMcpClientConfig, getConfig } from './config';
@@ -47,23 +48,29 @@ program
   });
 
 /**
- * Start interactive chat mode
+ * Create an MCPClient, overriding the server URL when it differs from the default
  */
-async function startInteractiveChat(serverUrl: string, initialFiles: string[]) {
-  const sessionManager = new SessionManager();
-  // Override server URL if provided via command line
+function createMcpClient(serverUrl: string): MCPClient {
   const config = getMcpClientConfig();
   if (serverUrl !== getDefaultServerUrl()) {
     config.serverUrl = serverUrl;
   }
-  const mcpClient = new MCPClient(config);
+  return new MCPClient(config);
+}
+
+/**
+ * Start interactive chat mode
+ */
+async function startInteractiveChat(serverUrl: string, initialFiles: string[]) {
+  const sessionManager = new SessionManager();
+  const mcpClient = createMcpClient(serverUrl);
 
   console.log(chalk.blue.bold('\n🤖 Khien AI Console - MCP Client'));
   console.log(chalk.gray(`Connected to: ${serverUrl}`));
   console.log(chalk.gray('Type "exit" to quit, "clear" to clear history\n'));
 
   // Process initial files if provided
-  let currentResources: any[] = [];
+  let currentResources: MCPResource[] = [];
   if (initialFiles.length > 0) {
     const spinner = ora('Loading files...').start();
     try {
@@ -170,13 +177,8 @@ async function startInteractiveChat(serverUrl: string, initialFiles: string[]) {
  * Send a single request and exit
  */
 async function sendSingleRequest(serverUrl: string, goal: string, filePaths: string[]) {
-  // Override server URL if provided via command line
-  const config = getMcpClientConfig();
-  if (serverUrl !== getDefaultServerUrl()) {
-    config.serverUrl = serverUrl;
-  }
-  const mcpClient = new MCPClient(config);
-  let resources: any[] = [];
+  const mcpClient = createMcpClient(serverUrl);
+  let resources: MCPResource[] = [];
 
   // Load files if provided
   if (filePaths.length > 0) {

@@ -1,5 +1,6 @@
 import { MCPTransport } from './transport';
 import { MCPRequest, MCPResponse, MCPResource, MCPClientConfig } from './types';
+import { getMimeType } from '../utils/files';
 
 /**
  * MCP Client - High-level client for interacting with MCP servers
@@ -49,29 +50,8 @@ export class MCPClient {
     return {
       uri: `file://${filePath}`,
       name: filePath.split('/').pop() || filePath,
-      mimeType: this.getMimeType(filePath),
+      mimeType: getMimeType(filePath),
       content,
     };
-  }
-
-  /**
-   * Simple MIME type detection based on file extension
-   */
-  private getMimeType(filePath: string): string {
-    const ext = filePath.split('.').pop()?.toLowerCase();
-    const mimeTypes: Record<string, string> = {
-      'js': 'text/javascript',
-      'ts': 'text/typescript',
-      'json': 'application/json',
-      'md': 'text/markdown',
-      'txt': 'text/plain',
-      'py': 'text/x-python',
-      'html': 'text/html',
-      'css': 'text/css',
-      'yaml': 'text/yaml',
-      'yml': 'text/yaml',
-      'xml': 'application/xml',
-    };
-    return mimeTypes[ext || ''] || 'text/plain';
   }
 }

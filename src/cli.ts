@@ -8,6 +8,7 @@ import { MCPClient } from './mcp/client';
 import { SessionManager } from './session/manager';
 import { createFileResources } from './utils/files';
 import { getDefaultServerUrl, getMcpClientConfig, getConfig } from './config';
+import { MCPResource } from './mcp/types';
 
 const program = new Command();
 
@@ -49,7 +50,7 @@ program
 /**
  * Start interactive chat mode
  */
-async function startInteractiveChat(serverUrl: string, initialFiles: string[]) {
+async function startInteractiveChat(serverUrl: string, initialFiles: string[]): Promise<void> {
   const sessionManager = new SessionManager();
   // Override server URL if provided via command line
   const config = getMcpClientConfig();
@@ -63,7 +64,7 @@ async function startInteractiveChat(serverUrl: string, initialFiles: string[]) {
   console.log(chalk.gray('Type "exit" to quit, "clear" to clear history\n'));
 
   // Process initial files if provided
-  let currentResources: any[] = [];
+  let currentResources: MCPResource[] = [];
   if (initialFiles.length > 0) {
     const spinner = ora('Loading files...').start();
     try {
@@ -169,14 +170,14 @@ async function startInteractiveChat(serverUrl: string, initialFiles: string[]) {
 /**
  * Send a single request and exit
  */
-async function sendSingleRequest(serverUrl: string, goal: string, filePaths: string[]) {
+async function sendSingleRequest(serverUrl: string, goal: string, filePaths: string[]): Promise<void> {
   // Override server URL if provided via command line
   const config = getMcpClientConfig();
   if (serverUrl !== getDefaultServerUrl()) {
     config.serverUrl = serverUrl;
   }
   const mcpClient = new MCPClient(config);
-  let resources: any[] = [];
+  let resources: MCPResource[] = [];
 
   // Load files if provided
   if (filePaths.length > 0) {

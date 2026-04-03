@@ -1,4 +1,4 @@
-import { MCPMessage, MCPSessionState } from '../mcp/types';
+import { MCPMessage, MCPResource, MCPSessionState } from '../mcp/types';
 
 /**
  * Session Manager - Handles in-memory conversation state
@@ -26,13 +26,13 @@ export class SessionManager {
    * Generate a simple session ID
    */
   private generateSessionId(): string {
-    return `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    return `session_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
   }
 
   /**
    * Add a user message to the session
    */
-  addUserMessage(content: string, resources?: any[]): void {
+  addUserMessage(content: string, resources?: MCPResource[]): void {
     const message: MCPMessage = {
       role: 'user',
       content,

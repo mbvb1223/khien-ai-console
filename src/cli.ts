@@ -5,6 +5,7 @@ import inquirer from 'inquirer';
 import chalk from 'chalk';
 import ora from 'ora';
 import { MCPClient } from './mcp/client';
+import { MCPResource } from './mcp/types';
 import { SessionManager } from './session/manager';
 import { createFileResources } from './utils/files';
 import { getDefaultServerUrl, getMcpClientConfig, getConfig } from './config';
@@ -63,7 +64,7 @@ async function startInteractiveChat(serverUrl: string, initialFiles: string[]) {
   console.log(chalk.gray('Type "exit" to quit, "clear" to clear history\n'));
 
   // Process initial files if provided
-  let currentResources: any[] = [];
+  let currentResources: MCPResource[] = [];
   if (initialFiles.length > 0) {
     const spinner = ora('Loading files...').start();
     try {
@@ -176,7 +177,7 @@ async function sendSingleRequest(serverUrl: string, goal: string, filePaths: str
     config.serverUrl = serverUrl;
   }
   const mcpClient = new MCPClient(config);
-  let resources: any[] = [];
+  let resources: MCPResource[] = [];
 
   // Load files if provided
   if (filePaths.length > 0) {
